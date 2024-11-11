@@ -25,7 +25,7 @@ jobs:
   tag:
     runs-on: ubuntu-latest
     outputs:
-      version_tag: ${{ steps.bump_version.outputs.new_tag }}
+      version_tag: ${{ steps.bump_version.outputs.new_tag }}  # Store the tag for downstream jobs
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -34,14 +34,14 @@ jobs:
       id: bump_version
       uses: anothrNick/github-tag-action@v1
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         DEFAULT_BUMP: "patch"
         WITH_V: true
         RELEASE_BRANCHES: "main"
         INITIAL_VERSION: "0.1.0"
 
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest 
     needs: [test, tag]  
 
     steps:
