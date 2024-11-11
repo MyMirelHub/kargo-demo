@@ -1,4 +1,4 @@
-name: CI Build, Test and Push to Docker Hub
+name: CI Build, Test, and Push to Docker Hub
 
 on:
   push:
@@ -30,18 +30,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Get Git Tag
-      id: get_tag
-      run: |
-        TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
-        if [ -z "$TAG" ]; then
-          echo "Error: Git tag is required to push an image. Please tag your commit with a semantic version (e.g., v1.0.0)."
-          exit 1
-        elif [ "$TAG" == "latest" ]; then
-          echo "Error: 'latest' tag is not allowed for versioned releases. Please use a semantic version tag."
-          exit 1
-        fi
-        echo "tag=$TAG" >> $GITHUB_ENV
+    # Generate the next semantic version tag
+    - name: Bump Version and Tag
+      id: bump_version
+      uses: anothrNick/github-tag-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        default_bump: "patch"
+        tag_prefix: "v"       
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -59,4 +56,4 @@ jobs:
         context: .
         push: true
         tags: |
-          mirel1/demoapp:${{ env.tag }}
+          mirel1/demoapp:${{ steps.bump_version.outputs.new_tag }}  # Use the new auto-generated tag
