@@ -23,7 +23,7 @@ jobs:
       run: go test -v ./...
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: test
 
     steps:
