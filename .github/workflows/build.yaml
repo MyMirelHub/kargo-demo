@@ -33,9 +33,9 @@ jobs:
     # Generate semantic version tag using GitHub Tag Bumper Action
     - name: Bump Version and Tag
       id: bump_version
-      uses: anothrNick/github-tag-action@v1.41.0
+      uses: anothrNick/github-tag-action@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         DEFAULT_BUMP: "patch"      # Default bump type
         WITH_V: true               # Prefix with 'v' (e.g., v1.0.0)
