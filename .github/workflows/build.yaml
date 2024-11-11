@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout code
@@ -36,7 +36,6 @@ jobs:
       uses: anothrNick/github-tag-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      with:
         DEFAULT_BUMP: "patch"      # Default bump type
         WITH_V: true               # Prefix with 'v' (e.g., v1.0.0)
         RELEASE_BRANCHES: "main"   # Only tag commits on the main branch
