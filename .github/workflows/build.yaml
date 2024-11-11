@@ -22,27 +22,32 @@ jobs:
       working-directory: src
       run: go test -v ./...
 
-  build:
+  tag:
     runs-on: ubuntu-latest
     needs: test
+    outputs:
+      version_tag: ${{ steps.bump_version.outputs.new_tag }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Generate Semantic Version Tag
+      id: bump_version
+      uses: anothrNick/github-tag-action@v1
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        DEFAULT_BUMP: "patch"
+        WITH_V: true
+        RELEASE_BRANCHES: "main"
+        INITIAL_VERSION: "0.1.0"
+
+  build:
+    runs-on: macos-latest
+    needs: [test, tag]  
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-  
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-
-    # Generate semantic version tag using GitHub Tag Bumper Action
-    - name: Bump Version and Tag
-      id: bump_version
-      uses: anothrNick/github-tag-action@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        DEFAULT_BUMP: "patch"      # Default bump type
-        WITH_V: true               # Prefix with 'v' (e.g., v1.0.0)
-        RELEASE_BRANCHES: "main"   # Only tag commits on the main branch
-        INITIAL_VERSION: "0.1.0"   # Starting version if no tags are found
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -61,4 +66,4 @@ jobs:
         context: .
         push: true
         tags: |
-          mirel1/demoapp:${{ steps.bump_version.outputs.new_tag }}
+          mirel1/demoapp:${{ needs.tag.outputs.version_tag }}
