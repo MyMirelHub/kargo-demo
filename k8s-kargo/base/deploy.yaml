@@ -13,13 +13,5 @@ spec:
         app: kargo-demo
     spec:
       containers:
-      - name: nginx 
-        image: public.ecr.aws/nginx/nginx:placeholder
-        volumeMounts:
-        - name: content
-          mountPath: /usr/share/nginx/html
-          readOnly: true
-      volumes:
-      - name: content
-        configMap:
-          name: kargo-demo-content
+      - name: demoapp 
+        image: docker.io/mirel1/demoapp:placeholder
