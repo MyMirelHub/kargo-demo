@@ -13,7 +13,7 @@ spec:
         app: kargo-demo
     spec:
       containers:
-      - image: ghcr.io/mymirelhub/demoapp:v1.1.0
+      - image: ghcr.io/mymirelhub/demoapp:v1.1.3
         name: demoapp
 ---
 apiVersion: v1
