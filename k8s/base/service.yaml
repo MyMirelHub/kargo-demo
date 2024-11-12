@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: k8s-go-app
+  name: k8s-goapp
 spec:
   selector:
-    app: k8s-go-app
+    app: k8s-goapp
   ports:
     - protocol: TCP
       port: 8080

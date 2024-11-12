@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: myapp-dev
+namespace: kargo-goapp-dev
 
 resources:
   - ../../base
@@ -8,7 +8,7 @@ resources:
 patches:
   - target:
       kind: Deployment
-      name: k8s-go-app
+      name: k8s-goapp
     patch: |
       - op: replace
         path: /spec/replicas
