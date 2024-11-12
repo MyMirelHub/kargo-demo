@@ -1,0 +1,194 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Project
+metadata:
+  name: kargo-demo
+spec:
+  promotionPolicies:
+  - stage: test
+    autoPromotionEnabled: true
+  - stage: uat
+    autoPromotionEnabled: false
+  - stage: prod
+    autoPromotionEnabled: false
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: kargo-demo
+  namespace: kargo-demo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        repoURL: docker.io/mirel1/demoapp
+        discoveryLimit: 10
+        imageSelectionStrategy: SemVer
+        strictSemvers: false     
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: test
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      direct: true
+  promotionTemplate:
+    spec:
+      steps:
+      - uses: git-clone
+        config:
+          repoURL: https://github.com/MyMirelHub/kargo-demo
+          checkout:
+          - branch: main
+            path: ./src
+          - branch: stage/test
+            create: true
+            path: ./out
+      - uses: git-clear
+        config:
+          path: ./out
+      - uses: kustomize-set-image
+        as: update-image
+        config:
+          path: ./src/k8s-app/base
+          images:
+          - image: docker.io/mirel1/demoapp
+      - uses: kustomize-build
+        config:
+          path: ./src/k8s-app/stages/test
+          outPath: ./out/manifests.yaml
+      - uses: git-commit
+        as: commit
+        config:
+          path: ./out
+          messageFromSteps:
+          - update-image
+      - uses: git-push
+        config:
+          path: ./out
+          targetBranch: stage/test
+      - uses: argocd-update
+        config:
+          apps:
+          - name: kargo-demo-test
+            sources:
+            - repoURL: https://github.com/MyMirelHub/kargo-demo
+              desiredCommitFromStep: commit
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: uat
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      stages:
+      - test
+  promotionTemplate:
+    spec:
+      steps:
+      - uses: git-clone
+        config:
+          repoURL: https://github.com/MyMirelHub/kargo-demo
+          checkout:
+          - branch: main
+            path: ./src
+          - branch: stage/uat
+            create: true
+            path: ./out
+      - uses: git-clear
+        config:
+          path: ./out
+      - uses: kustomize-set-image
+        as: update-image
+        config:
+          path: ./src/k8s-app/base
+          images:
+          - image: docker.io/mirel1/demoapp
+      - uses: kustomize-build
+        config:
+          path: ./src/k8s-app/stages/uat
+          outPath: ./out/manifests.yaml
+      - uses: git-commit
+        as: commit
+        config:
+          path: ./out
+          messageFromSteps:
+          - update-image
+      - uses: git-push
+        config:
+          path: ./out
+          targetBranch: stage/uat
+      - uses: argocd-update
+        config:
+          apps:
+          - name: kargo-demo-uat
+            sources:
+            - repoURL: https://github.com/MyMirelHub/kargo-demo
+              desiredCommitFromStep: commit
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      stages:
+      - uat
+  promotionTemplate:
+    spec:
+      steps:
+      - uses: git-clone
+        config:
+          repoURL: https://github.com/MyMirelHub/kargo-demo
+          checkout:
+          - branch: main
+            path: ./src
+          - branch: stage/prod
+            create: true
+            path: ./out
+      - uses: git-clear
+        config:
+          path: ./out
+      - uses: kustomize-set-image
+        as: update-image
+        config:
+          path: ./src/k8s-app/base
+          images:
+          - image: docker.io/mirel1/demoapp
+      - uses: kustomize-build
+        config:
+          path: ./src/k8s-app/stages/prod
+          outPath: ./out/manifests.yaml
+      - uses: git-commit
+        as: commit
+        config:
+          path: ./out
+          messageFromSteps:
+          - update-image
+      - uses: git-push
+        config:
+          path: ./out
+          targetBranch: stage/prod
+      - uses: argocd-update
+        config:
+          apps:
+          - name: kargo-demo-prod
+            sources:
+            - repoURL: https://github.com/MyMirelHub/kargo-demo
+              desiredCommitFromStep: commit
