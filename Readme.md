@@ -56,3 +56,16 @@ This solution aims to address common challenges in deployment automation, observ
 2. Set up Argo CD and Kargo on your Kubernetes cluster.
 3. Configure Kargo to manage promotion policies and add approvals between test, UAT, and production stages.
 4. Commit code changes to GitHub, triggering GitHub Actions, Argo CD, and Kargo to automate the deployment process across environments.
+
+```
++--------------------+        +-----------------------+        +-----------------------+   
+|   Development      |        |        UAT           |        |     Production        |   
+|     (Test)         |        |                      |        |                       |   
+|                    |        |                      |        |                       |   
+|     Kargo          |        |       Kargo          |        |         Kargo         |   
+|  Auto-promotes     +------> |    Auto-promotes     +------> | Requires Manual       |   
+|   for Patch        |        |   for Minor/Major    |        |      Approval         |   
++--------------------+        +-----------------------+        +-----------------------+   
+
+        GitHub Actions ---> GitHub ---> Registry
+```
