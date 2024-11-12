@@ -4,7 +4,7 @@ metadata:
   labels:
     app: your-app
   name: your-app-deployment
-  namespace: myapp-dev
+  namespace: kargo-goapp-dev
 spec:
   replicas: 1
   selector:
@@ -24,13 +24,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: k8s-go-app
-  namespace: myapp-dev
+  name: k8s-goapp
+  namespace: kargo-goapp-dev
 spec:
   ports:
   - port: 8080
     protocol: TCP
     targetPort: 8080
   selector:
-    app: k8s-go-app
+    app: k8s-goapp
   type: ClusterIP
