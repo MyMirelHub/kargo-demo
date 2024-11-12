@@ -100,8 +100,7 @@ spec:
       kind: Warehouse
       name: kargo-demo-major
     sources:
-      stages:
-      - test
+      direct: true
   promotionTemplate:
     spec:
       steps:
