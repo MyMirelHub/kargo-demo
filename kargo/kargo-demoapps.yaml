@@ -21,7 +21,7 @@ spec:
   interval: 5m0s
   subscriptions:
     - image:
-        repoURL: docker.io/mirel1/demoapp
+        repoURL: ghcr.io/mymirelhub/demoapp
         discoveryLimit: 10
         imageSelectionStrategy: SemVer
         strictSemvers: false     
@@ -58,7 +58,7 @@ spec:
         config:
           path: ./src/k8s-app/base
           images:
-          - image: docker.io/mirel1/demoapp
+          - image: ghcr.io/mymirelhub/demoapp
       - uses: kustomize-build
         config:
           path: ./src/k8s-app/stages/test
@@ -114,7 +114,7 @@ spec:
         config:
           path: ./src/k8s-app/base
           images:
-          - image: docker.io/mirel1/demoapp
+          - image: ghcr.io/mymirelhub/demoapp
       - uses: kustomize-build
         config:
           path: ./src/k8s-app/stages/uat
@@ -170,7 +170,7 @@ spec:
         config:
           path: ./src/k8s-app/base
           images:
-          - image: docker.io/mirel1/demoapp
+          - image: ghcr.io/mymirelhub/demoapp
       - uses: kustomize-build
         config:
           path: ./src/k8s-app/stages/prod

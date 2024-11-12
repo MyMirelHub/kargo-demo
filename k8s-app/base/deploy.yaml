@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
       - name: demoapp 
-        image: docker.io/mirel1/demoapp:placeholder
+        image: ghcr.io/mymirelhub/demoapp:placeholder
