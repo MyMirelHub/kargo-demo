@@ -41,7 +41,7 @@ jobs:
         INITIAL_VERSION: "0.1.0"
 
   build:
-    runs-on: macos-latest 
+    runs-on: macos-15
     needs: [test, tag]  
 
     steps:
