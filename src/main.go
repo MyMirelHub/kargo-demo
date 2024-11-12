@@ -7,6 +7,8 @@ import (
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, Kubernetes from Go!")
+	fmt.Fprintf(w, "RELEASE 2")
+
 }
 
 func main() {
