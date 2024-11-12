@@ -44,6 +44,8 @@ jobs:
         WITH_V: true               # Prefix with 'v' (e.g., v1.0.0)
         RELEASE_BRANCHES: "main"   # Only tag commits on the main branch
         INITIAL_VERSION: "0.1.0"   # Starting version if no tags are found
+        MAJOR_STRING_TOKEN: "#major"     # Trigger major bump only with "#major" in commit
+        PATCH_STRING_TOKEN: "#patch"     # Default patch bump with "#patch" or no token
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
